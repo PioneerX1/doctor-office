@@ -57,6 +57,20 @@ public class PatientTest{
     assertEquals(true, Patient.all().get(0).equals(testPatient));
     assertEquals(true, Patient.all().get(1).equals(testPatient2));
   }
+  @Test
+  public void find_returnsPatientWithSameId_testPatient2() {
+    Patient testPatient = new Patient("John Doe", "12/08/1982");
+    testPatient.save();
+    Patient testPatient2 = new Patient("Frank", "02/05/1979");
+    testPatient2.save();
+    assertEquals(Patient.find(testPatient2.getId()), testPatient2);
+  }
+  @Test
+  public void updateDob_updatesPatientDOB_true() {
+    Patient testPatient = new Patient("John Doe", "12/08/1982");
+    testPatient.save();
+    testPatient.updateDob("11/16/1979");
+    assertEquals("11/16/1979", Patient.find(testPatient.getId()).getDob());
+  }
 
-  //do FIND next
 }

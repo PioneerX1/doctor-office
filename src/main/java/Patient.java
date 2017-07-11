@@ -27,6 +27,24 @@ public class Patient {
       return con.createQuery(sql).executeAndFetch(Patient.class);
     }
   }
+  public static Patient find(int id) {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT* FROM patients where id=:id";
+      Patient patient = con.createQuery(sql)
+        .addParameter("id", id)
+        .executeAndFetchFirst(Patient.class);
+      return patient;
+    }
+  }
+  public void updateDob(String dob) {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "UPDATE patients SET dob = :dob WHERE id=:id";
+      con.createQuery(sql)
+        .addParameter("dob", dob)
+        .addParameter("id", id)
+        .executeUpdate();
+    }
+  }
 
   public String getName() {
     return name;
