@@ -12,29 +12,31 @@ public class PatientTest{
   public void tearDown() {
     try(Connection con = DB.sql2o.open()) {
       String deletePatientsQuery = "DELETE FROM patients *;";
+      String deleteDoctorsQuery = "DELETE FROM doctors *;";
       con.createQuery(deletePatientsQuery).executeUpdate();
+      con.createQuery(deleteDoctorsQuery).executeUpdate();
     }
   }
 
   @Test
   public void Patient_instantiatesCorrectly_true() {
-    Patient testPatient = new Patient("John Doe", "12/08/1982");
+    Patient testPatient = new Patient("John Doe", "12/08/1982", 1);
     assertEquals(true, testPatient instanceof Patient);
   }
   @Test
   public void getName_retrievesPatientName_John_Doe() {
-    Patient testPatient = new Patient("John Doe", "12/08/1982");
+    Patient testPatient = new Patient("John Doe", "12/08/1982", 1);
     assertEquals("John Doe", testPatient.getName());
   }
   @Test
   public void getId_patientInstantiatesWithID_true() {
-    Patient testPatient = new Patient("John Doe", "12/08/1982");
+    Patient testPatient = new Patient("John Doe", "12/08/1982", 1);
     testPatient.save();
     assertTrue(testPatient.getId() > 0);
   }
   @Test
   public void save_assignsIdToObject() {
-    Patient testPatient = new Patient("John Doe", "12/08/1982");
+    Patient testPatient = new Patient("John Doe", "12/08/1982", 1);
     testPatient.save();
     Patient savedPatient = Patient.all().get(0);
     assertEquals(testPatient.getId(), savedPatient.getId());
@@ -42,35 +44,44 @@ public class PatientTest{
   //two patient objects with same info should still be unique cause of ID
   @Test
   public void equals_returnsTrueIfPatientsAreTheSame_false() {
-    Patient testPatient = new Patient("John Doe", "12/08/1982");
+    Patient testPatient = new Patient("John Doe", "12/08/1982", 1);
     testPatient.save();
-    Patient testPatient2 = new Patient("John Doe", "12/08/1982");
+    Patient testPatient2 = new Patient("John Doe", "12/08/1982", 1);
     testPatient2.save();
     assertFalse(testPatient.equals(testPatient2));
   }
   @Test
   public void all_returnsAllInstancesOfPatient_true() {
-    Patient testPatient = new Patient("John Doe", "12/08/1982");
+    Patient testPatient = new Patient("John Doe", "12/08/1982", 1);
     testPatient.save();
-    Patient testPatient2 = new Patient("Jane Doe", "01/05/1979");
+    Patient testPatient2 = new Patient("Jane Doe", "01/05/1979", 1);
     testPatient2.save();
     assertEquals(true, Patient.all().get(0).equals(testPatient));
     assertEquals(true, Patient.all().get(1).equals(testPatient2));
   }
   @Test
   public void find_returnsPatientWithSameId_testPatient2() {
-    Patient testPatient = new Patient("John Doe", "12/08/1982");
+    Patient testPatient = new Patient("John Doe", "12/08/1982", 1);
     testPatient.save();
-    Patient testPatient2 = new Patient("Frank", "02/05/1979");
+    Patient testPatient2 = new Patient("Frank", "02/05/1979", 1);
     testPatient2.save();
     assertEquals(Patient.find(testPatient2.getId()), testPatient2);
   }
   @Test
   public void updateDob_updatesPatientDOB_true() {
-    Patient testPatient = new Patient("John Doe", "12/08/1982");
+    Patient testPatient = new Patient("John Doe", "12/08/1982", 1);
     testPatient.save();
     testPatient.updateDob("11/16/1979");
     assertEquals("11/16/1979", Patient.find(testPatient.getId()).getDob());
+  }
+  @Test
+  public void save_savesDoctorIdIntoDB_true() {
+    Doctor myDoctor = new Doctor("Harold Death", "Gaping Head Wound");
+    myDoctor.save();
+    Patient testPatient = new Patient("Headwound Harry", "10/01/2000", myDoctor.getId());
+    testPatient.save();
+    Patient savedPatient = Patient.find(testPatient.getId());
+    assertEquals(savedPatient.getDoctorId(), myDoctor.getId());
   }
 
 }
