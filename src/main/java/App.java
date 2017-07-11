@@ -10,7 +10,7 @@ public class App {
     String layout = "templates/layout.vtl";
 
     //populate with demo default data
-    defaultData();
+    //defaultData();
 
     get("/", (request, response) -> {
       Map<String, Object> model = new HashMap<String, Object>();
@@ -19,7 +19,26 @@ public class App {
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
+    post("/newdoctor", (request, response) -> {
+      Map<String, Object> model = new HashMap<String, Object>();
+      String name = request.queryParams("name");
+      String specialty = request.queryParams("specialty");
+      Doctor newDoctor = new Doctor(name, specialty);
+      newDoctor.save();
+      response.redirect("/");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
 
+    post("/newpatient", (request, response) -> {
+      Map<String, Object> model = new HashMap<String, Object>();
+      Doctor doctor = Doctor.find(Integer.parseInt(request.queryParams("doctorId")));
+      String patientName = request.queryParams("patient-name");
+      String dob = request.queryParams("patient-dob");
+      Patient newPatient = new Patient(patientName, dob, doctor.getId());
+      newPatient.save();
+      response.redirect("/");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
 
   }
 

@@ -1,29 +1,32 @@
 <!--index.vtl-->
 <h1>Ye Ol Clinic</h1>
 
+<h2>New Gentleman Doctor:</h2>
+<br>
+<form action="/" method="post">
+  <label for="name">Doctor's Name</label>
+  <input id="name" name="name" type="text">
+  <label for="specialty">Doctor's Specialty</label>
+  <input id="specialty" name="specialty" type="text">
+  <button type="submit" class="btn btn-success">Add This Fine Surgeon</button>
+</form>
+<br>
 <h2>Gentleman Doctors:</h2>
 
 #if($doctors)
   <p>Click on a doctor to see existing patients (mostly dead):</p>
   <ul>
     #foreach ($doctor in $doctors)
-      <li><a href="/doctor/$doctor.getId()">$doctor.getName()</a></li>
+      <li><a href="/doctor/$doctor.getId()">$doctor.getName()
+         -  $doctor.getSpecialty()</a></li>
     #end
   </ul>
 #end
-
-<h2>New Gentleman Doctor:</h2>
-
-<form action="/doctors" method="post">
-  <label for="name">Doctor's Name</label>
-  <input id="name" name="name" type="text">
-  <button type="submit" class="btn btn-success">Add This Fine Surgeon</button>
-</form>
-
+<br>
 <h2>New Patient:</h2>
 
-<form action="/patients" method="post">
-  <label for="patientId">Select a Doctor</label>
+<form action="/" method="post">
+  <label for="doctorId">Select a Doctor</label>
   <select id='doctorId' name='doctorId' type='text'>
     #foreach($doctor in $doctors)
       <option value="$doctor.getId()">$doctor.getName()</option>
@@ -31,8 +34,12 @@
   </select>
 
   <div class="form-group">
-    <label for="description">Name of Patient if You Can Write &amp; Spell </label>
-    <input id="description" name="Specialty" type="text" class="form-control">
+    <label for="patient-name">Name of Patient if You Can Write &amp; Spell </label>
+    <input id="patient-name" name="patient-name" type="text" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="patient-dob">Year Born After Our Lord </label>
+    <input id="patient-dob" name="patient-dob" type="text" class="form-control">
   </div>
 
   <button type="submit" class="btn btn-success">Add Patient</button>
